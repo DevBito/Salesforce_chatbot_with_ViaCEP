@@ -18,8 +18,8 @@ Projeto que integra o Salesforce Einstein Bot com a API do ViaCEP para obter o e
 
 ## Estrutura do Código
 src
- ├── 📜 ViaCepService.apxc   # Classe Apex para consulta ao ViaCEP
- ├── 📜 README.md            # Documentação do projeto
+├── 📜 ViaCepService.apxc   # Classe Apex para consulta ao ViaCEP
+├── 📜 README.md            
 
 ## Configuração Necessária
 - Adicionar https://viacep.com.br em Remote Site Settings.
