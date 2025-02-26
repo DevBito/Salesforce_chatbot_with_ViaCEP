@@ -1,0 +1,66 @@
+public with sharing class ViaCepService {
+        
+        public class Endereco {
+            @InvocableVariable
+            public String cep;
+            
+            @InvocableVariable
+            public String logradouro;
+            
+            @InvocableVariable
+            public String complemento;
+            
+            @InvocableVariable
+            public String bairro;
+            
+            @InvocableVariable
+            public String localidade;
+            
+            @InvocableVariable
+            public String uf;
+        }
+    
+        @InvocableMethod(label='Buscar Endereço por CEP' description='Consulta um endereço na API ViaCEP')
+        public static List<Endereco> buscarEndereco(List<String> listaCeps) {  
+            List<Endereco> resultados = new List<Endereco>();
+    
+            System.debug('### INICIANDO BUSCA NO VIACEP...');
+    
+            if (listaCeps == null || listaCeps.isEmpty()) {
+                System.debug('### ERRO: Nenhum CEP foi fornecido.');
+                return resultados;
+            }
+    
+            String cep = listaCeps[0];
+    
+            if (cep == null || cep.trim() == '') {
+                System.debug('### ERRO: CEP inválido ou vazio.');
+                return resultados;
+            }
+    
+            System.debug('### REALIZANDO REQUISIÇÃO PARA VIACEP...');
+    
+            String url = 'https://viacep.com.br/ws/' + cep + '/json/';
+            Http http = new Http();
+            HttpRequest request = new HttpRequest();
+            request.setEndpoint(url);
+            request.setMethod('GET');
+    
+            try {
+                HttpResponse response = http.send(request);
+                System.debug('### STATUS CODE: ' + response.getStatusCode());
+    
+                if (response.getStatusCode() == 200) {
+                    System.debug('### REQUISIÇÃO SUCESSO! PROCESSANDO DADOS...');
+                    Endereco endereco = (Endereco) JSON.deserialize(response.getBody(), Endereco.class);
+                    resultados.add(endereco);
+                } else {
+                    System.debug('### ERRO NA REQUISIÇÃO: STATUS ' + response.getStatusCode());
+                }
+            } catch (Exception e) {
+                System.debug('### ERRO AO CHAMAR API VIACEP: ' + e.getMessage());
+            }
+    
+            return resultados;
+        }
+    }
